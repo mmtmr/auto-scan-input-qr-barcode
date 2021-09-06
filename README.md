@@ -14,6 +14,7 @@ This program uses OBS Virtual Cam plugin to read the QR Code shown on screen, it
 
 ## ToDo
 - [ ] Delay Time To Start Next Scan
+- [ ] Auto run OBS
 
 ## Configuration Options
 - **website:** The website that you want the QR code/Barcode to be key in. If you leave it empty，the QR code will be written to result.txt instead.
