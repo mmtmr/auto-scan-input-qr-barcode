@@ -1,0 +1,16 @@
+{
+  "website": "",
+  "screenshot": true,
+  "screenshot_path": "",
+  "regex_format": "",
+  "avoid_duplicate": true,
+  "discord_webhook_url" : "",
+  "discord_message": "",
+  "camera_position": 2,
+  "delay_start_ie" : 5,
+  "delay_connect_ie" : 5,
+  "delay_focus_ie" : 3,
+  "delay_input_ie": 3,
+  "delay_process_ie":10,
+  "delay_kill_ie" : 5
+}
