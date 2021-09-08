@@ -21,11 +21,11 @@ def send_message_image(discord_webhook_url,img_path):
     embed=DiscordEmbed(title='QR Code/Barcode Input')
     embed.set_image(url="attachment://image.png")
 
-    split_img_path=img_path.split("-",3)
+    split_img_path=img_path.split("-")
     embed.add_embed_field(name='Message', value=discord_message)
-    embed.add_embed_field(name='Date', value=split_img_path[0])
-    embed.add_embed_field(name='Time', value=split_img_path[1])
-    embed.add_embed_field(name='Result', value=split_img_path[2][0:-4])
+    embed.add_embed_field(name='Date', value=split_img_path[-3])
+    embed.add_embed_field(name='Time', value=split_img_path[-2])
+    embed.add_embed_field(name='Result', value=split_img_path[-1][0:-4])
 
     webhook.add_embed(embed)
 
