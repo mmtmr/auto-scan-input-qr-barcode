@@ -1,9 +1,13 @@
 import json
 import cv2, time, os, json, re
 from pyzbar import pyzbar
-from pywinauto.application import Application
 from datetime import datetime
 from discord_webhook import DiscordWebhook, DiscordEmbed
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+from selenium.webdriver.common.action_chains import ActionChains
 
 def load_config():
     global config
@@ -23,7 +27,7 @@ def send_message_image(discord_webhook_url,img_path):
 
     split_img_path=img_path.split("-")
     embed.add_embed_field(name='Message', value=discord_message)
-    embed.add_embed_field(name='Date', value=split_img_path[-3])
+    embed.add_embed_field(name='Date', value=split_img_path[-3].split("\\")[-1])
     embed.add_embed_field(name='Time', value=split_img_path[-2])
     embed.add_embed_field(name='Result', value=split_img_path[-1][0:-4])
 
@@ -80,31 +84,32 @@ def read_qrcode(last_code,frame):
 
 
 def input_qrcode (qrcode):
-    delay_connect_ie=config['delay_connect_ie']
-    delay_focus_ie=config['delay_focus_ie']
-    delay_input_ie=config['delay_input_ie']
-    delay_process_ie=config['delay_process_ie']
+    delay_start_ie=config['delay_start_ie']
+    website=config['website']
+    input_class_name=config['input_class_name']
+    auth_data=config['auth_data']
+    print(auth_data)
+    options = webdriver.ChromeOptions()
+    options.add_argument('--start-maximized')
+    if auth_data!="":
+        options.add_argument(auth_data)
+    driver = webdriver.Chrome(executable_path="./bin/chromedriver", chrome_options=options)
+    wait = WebDriverWait(driver, delay_start_ie)
+    time.sleep(1)
+    driver.get(website)
+    time.sleep(5)
+    wait.until(presence_of_element_located((By.CLASS_NAME, input_class_name)))
+    driver.find_element_by_class_name(input_class_name).click()
+    actions = ActionChains(driver)
+    actions.send_keys(qrcode)
+    actions.perform()
+    return driver
 
-    app=Application(backend="uia").connect(title_re = ".*Internet Explorer.*")
-    time.sleep(delay_connect_ie)
-    print([w.window_text() for w in app.windows()])
-    ie =  app.window(title_re = ".*Internet Explorer.*")
-    time.sleep(delay_focus_ie)
-    ie.set_focus()
-    print("Set focus")
-    time.sleep(delay_input_ie)
-    ie.type_keys(qrcode)
-    print("Type QR Code/Result")
-    time.sleep(delay_process_ie)
-    return ie
 
 
+def screenshot_qrcode(driver,qrcode,path):
 
-def screenshot_qrcode(ie,qrcode,path):
-    #Screenshot
-    img = ie.capture_as_image()
-
-    #Save to path
+    #Path name
     now = datetime.now()
     dt = now.strftime("%Y%m%d-%H%M%S")
     img_name=dt+'-'+qrcode+'.png'
@@ -116,7 +121,9 @@ def screenshot_qrcode(ie,qrcode,path):
     else:
         img_path=path+'\\'+img_name
     
-    img.save(img_path)
+    #Screenshot
+    time.sleep(5)
+    img = driver.save_screenshot(img_path)
     
     print("Save image")
     return img_path
@@ -156,19 +163,15 @@ def main():
         if qrcode_info!=-1:
             #Internet explorer will restart every time to input
             if website!="":
-                app=Application().start(
-                    r"c:\program files\internet explorer\iexplore.exe {}".format(website))
-                time.sleep(delay_start_ie)
-                ie=input_qrcode(qrcode_info)
-
+                driver=input_qrcode(qrcode_info)
                 if config["screenshot"]:
-                    img_path=screenshot_qrcode(ie,qrcode_info,screenshot_path)
-                    app.kill() 
+                    img_path=screenshot_qrcode(driver,qrcode_info,screenshot_path)
+                    driver.close(); 
                     time.sleep(delay_kill_ie)
                     if discord_webhook_url!="":
                         send_message_image(discord_webhook_url,img_path)
                 else:
-                    app.kill() 
+                    driver.close(); 
                     time.sleep(delay_kill_ie)
                     if discord_webhook_url!="":
                         send_message(discord_webhook_url,qrcode_info)

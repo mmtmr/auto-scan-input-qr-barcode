@@ -1,4 +1,4 @@
-discord_webhook==0.14.0
-pywinauto==0.6.8
-opencv_python==4.5.3.56
+opencv_python==4.5.4.58
 pyzbar==0.1.8
+discord_webhook==0.14.0
+selenium==3.141.0

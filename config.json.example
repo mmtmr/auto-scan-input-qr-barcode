@@ -7,6 +7,8 @@
   "discord_webhook_url" : "",
   "discord_message": "",
   "camera_position": 2,
+  "input_class_name": "",
+  "auth_data":"",
   "delay_start_ie" : 5,
   "delay_connect_ie" : 5,
   "delay_focus_ie" : 3,

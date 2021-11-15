@@ -36,13 +36,18 @@ This program uses OBS Virtual Cam plugin to read the QR Code shown on screen, it
 - **camera_position:** By default, the program will use the 2nd camera that is found in the system, which should be the OBS-VirtualCam. You may adjust it if your desired camera position is not at 2.
 <!-- - **another_key:** -->
 
+- **input_class_name:** If you are entering data in a website, here is the input class name so the program will wait until the input is available and click to focus on it.
+
+- **auth_data:** By default it is blank, if the website needs verification, please modify this into "user-data-dir=C:\\Users\\YOURUSERNAME\\AppData\\Local\\Google\\Chrome\\User Data"
+
 - Dangerous Configuration Options: **delay_start_ie**, **delay_connect_ie**, **delay_focus_ie**, **delay_input_ie**, **delay_process_ie**, **delay_kill_ie**
 
-    The program uses Internet Explorer to input QR Code/Barcode. As we all know, Internet Explorer is slow. The following option should only be modified if you have already make changes to the program so that it doesn't use Internet Explorer to open website, or you are confident that the Internet Explorer react fast. These options are not applicable if you leave the **website** option blank.
+    The program uses Google Chrome to input QR Code/Barcode. The following option should only be modified if you are confident of the responding time. These options are not applicable if you leave the **website** option blank.
 
 ## Run the script
 
  1. Modify "config.json" to fit your preference
  2. Install dependencies:   ```pip install -r requirements.txt```
- 3. Setup OBS Virtual Cam
- 3. Run [auto_scan_input_code.py](auto_scan_input_code.py): `python auto_scan_input_code.py`
+ 3. Download chromedriver.exe into bin folder. 
+ 4. Setup OBS Virtual Cam
+ 5. Run [auto_scan_input_code.py](auto_scan_input_code.py): `python auto_scan_input_code.py`
