@@ -163,20 +163,26 @@ def main():
         if qrcode_info!=-1:
             #Internet explorer will restart every time to input
             if website!="":
-                driver=input_qrcode(qrcode_info)
-                if config["screenshot"]:
-                    img_path=screenshot_qrcode(driver,qrcode_info,screenshot_path)
-                    driver.close(); 
-                    time.sleep(delay_kill_ie)
+                try:
+                    driver=input_qrcode(qrcode_info)
+                    if config["screenshot"]:
+                        img_path=screenshot_qrcode(driver,qrcode_info,screenshot_path)
+                        driver.close(); 
+                        time.sleep(delay_kill_ie)
+                        if discord_webhook_url!="":
+                            send_message_image(discord_webhook_url,img_path)
+                    else:
+                        driver.close(); 
+                        time.sleep(delay_kill_ie)
+                        if discord_webhook_url!="":
+                            send_message(discord_webhook_url,qrcode_info)
+                    last_code=qrcode_info
+                    qrcode_info=-1
+                    break
+                except Exception as ex:
                     if discord_webhook_url!="":
-                        send_message_image(discord_webhook_url,img_path)
-                else:
-                    driver.close(); 
-                    time.sleep(delay_kill_ie)
-                    if discord_webhook_url!="":
-                        send_message(discord_webhook_url,qrcode_info)
-                last_code=qrcode_info
-                qrcode_info=-1
+                        send_message(discord_webhook_url,str(ex))
+                        
                            
             else:
                 file = open("result.txt","a+")#append mode
