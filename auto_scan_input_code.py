@@ -178,7 +178,6 @@ def main():
                             send_message(discord_webhook_url,qrcode_info)
                     last_code=qrcode_info
                     qrcode_info=-1
-                    break
                 except Exception as ex:
                     if discord_webhook_url!="":
                         send_message(discord_webhook_url,str(ex))
